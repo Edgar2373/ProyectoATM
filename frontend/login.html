@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width-device-width, initial-scale=1.0" name="viewport" />
+        <title>Login</title>
+        
+        <link 
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"
+        />
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"
+        />
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+            rel="stylesheet"
+        />
+
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                extend: {
+                    colors: {
+                    primary: '#135bec',
+                    'background-light': '#f6f6f8',
+                    'background-dark': '#101622'
+                    },
+                    fontFamily: {
+                    display: ['Inter', 'sans-serif']
+                    },
+                    borderRadius: {
+                    DEFAULT: '0.25rem',
+                    lg: '0.5rem',
+                    xl: '0.75rem',
+                    full: '9999px'
+                    }
+                }
+                }
+            }
+        </script>
+
+        <style>
+            body {
+            min-height: max(884px, 100dvh);
+            }
+        </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col items-center justify-center p-4"
+  >
+    <!-- Background Decoration (Subtle Industrial Gradient) -->
+    <div
+      class="fixed inset-0 z-0 pointer-events-none opacity-10 bg-gradient-to-br from-primary via-transparent to-slate-400"
+    ></div>
+    <!-- iOS Style Header -->
+
+    <!-- Main Container -->
+    <div
+      class="relative w-full max-w-md bg-white dark:bg-[#1a2233] rounded-2xl shadow-xl overflow-hidden z-10 mt-16"
+    >
+      <!-- Logo -->
+      <div
+        class="relative h-48 bg-slate-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden"
+      >
+        <div class="absolute inset-0 bg-primary/10"></div>
+        <!-- Overlay -->
+        <div
+          class="absolute inset-0 opacity-20 bg-cover bg-center"
+          data-alt="Industrial factory blurred background"
+          style="
+            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBBGj8TBSMVYusgk6cRkuaXZDu1d-yMyxrVcnzotNIiUS9SaMeoSRaRk6SNqFgESsbYUStTNvlNeY2hbU2jy9QoQ0c_aQ-9pDnFuyHhgzJyOoTMi2fbDHtM_jK_2sK_yeGFe8bP8QaDpavOi0gvPj1bkbSqCScxCErTUPCnjZETEbTLk7VBzVBhlkvHUqL5WLORLAOns65pyDrlBg0foLsUv6otpHd2VF6xLNSDLuN51jeTcCIgX3tLDYWwexI4CR7rlSH04YPn71I');
+          "
+        ></div>
+        <div class="relative z-10 flex flex-col items-center gap-3">
+          <div
+            class="w-20 h-20 bg-primary rounded-xl flex items-center justify-center shadow-lg text-white"
+          >
+            <span class="material-symbols-outlined text-[40px]">factory</span>
+          </div>
+          <h1
+            class="text-slate-900 dark:text-slate-100 text-xl font-bold tracking-tight"
+          >
+            Gerer L'Energie
+          </h1>
+        </div>
+      </div>
+      <!-- Content Area -->
+      <div class="p-6 md:p-8 flex flex-col gap-6">
+        <div class="text-center">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Bienvenido de nuevo
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">
+            Introduce tus credenciales para acceder al formulario
+          </p>
+        </div>
+        <form class="flex flex-col gap-5">
+          <!-- Username  -->
+          <div class="space-y-2">
+            <label
+              class="text-sm font-medium text-slate-900 dark:text-slate-200"
+              for="username"
+              >Usuario</label
+            >
+            <div class="relative group">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <span
+                  class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors"
+                  >person</span
+                >
+              </div>
+              <input
+                class="form-input block w-full pl-10 pr-3 py-3 border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm sm:text-sm"
+                id="username"
+                placeholder="Ingresa tu usuario"
+                type="text"
+              />
+            </div>
+          </div>
+          <!-- Password -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <label
+                class="text-sm font-medium text-slate-900 dark:text-slate-200"
+                for="password"
+                >Contraseña</label
+              >
+            </div>
+            <div class="relative group">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <span
+                  class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors"
+                  >lock</span
+                >
+              </div>
+              <input
+                class="form-input block w-full pl-10 pr-3 py-3 border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm sm:text-sm"
+                id="password"
+                placeholder="••••••••"
+                type="password"
+              />
+            </div>
+          </div>
+          <!-- Login Button -->
+          <button
+            id="loginBtn"
+            class="w-full mt-2 bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 flex items-center justify-center gap-2"
+            type="submit"
+          >
+            <span id="btnText">Iniciar Sesión</span>
+            <span class="material-symbols-outlined text-[20px]"
+              >arrow_forward</span
+            >
+          </button>
+          <div id="errorMsg" class="hidden text-red-600 text-sm text-center mt-2"></div>
+        </form>
+        <div class="relative flex py-2 items-center">
+          <div
+            class="flex-grow border-t border-slate-200 dark:border-slate-700"
+          ></div>
+          <span
+            class="flex-shrink-0 mx-4 text-slate-400 dark:text-slate-500 text-xs uppercase font-medium"
+            >Soporte Técnico</span
+          >
+          <div
+            class="flex-grow border-t border-slate-200 dark:border-slate-700"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.querySelector('form');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const loginBtn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('btnText');
+      const errorMsg = document.getElementById('errorMsg');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Reset error
+        errorMsg.classList.add('hidden');
+        
+        // Disable button
+        loginBtn.disabled = true;
+        btnText.textContent = 'Autenticando...';
+        
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        
+        if (!username || !password) {
+          showError('Por favor completa todos los campos');
+          resetButton();
+          return;
+        }
+        
+        try {
+          const apiUrl = `https://form.gererlenergie.com/api/login`;
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include'
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Login exitoso - guardar info y redirigir
+            localStorage.setItem('user', JSON.stringify(data.user));
+            btnText.textContent = '✓ Redirigiendo...';
+            
+            setTimeout(() => {
+              window.location.href = 'formulario_completo_responsive.html';
+            }, 500);
+          } else {
+            // Error de autenticación
+            showError(data.message || 'Credenciales inválidas');
+            resetButton();
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          showError('Error de conexión al servidor');
+          resetButton();
+        }
+      });
+      
+      function showError(message) {
+        errorMsg.textContent = '❌ ' + message;
+        errorMsg.classList.remove('hidden');
+      }
+      
+      function resetButton() {
+        loginBtn.disabled = false;
+        btnText.textContent = 'Iniciar Sesión';
+      }
+    </script>
+  </body>
+</html>

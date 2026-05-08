@@ -1,12 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sistema de Informes - Gerer Energie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#135bec'
+            }
+          }
+        }
+      }
+    </script>
 </head>
-<body>
-    <h1>Formulario atm</h1>
-    
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+    <div class="text-center">
+        <div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center shadow-lg text-white mx-auto mb-4 animate-pulse">
+            <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900 mb-2">Sistema de Informes Técnicos</h1>
+        <p class="text-slate-600 mb-4">Redirigiendo...</p>
+        <div class="w-48 h-1 bg-slate-200 rounded-full mx-auto overflow-hidden">
+            <div class="h-full bg-primary rounded-full animate-[loading_1s_ease-in-out_infinite]"></div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes loading {
+            0% { width: 0%; margin-left: 0%; }
+            50% { width: 50%; margin-left: 25%; }
+            100% { width: 0%; margin-left: 100%; }
+        }
+    </style>
+
+    <script>
+        // Verificar autenticación y redirigir
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        
+        if (user) {
+            // Si está autenticado, ir al formulario responsivo
+            window.location.href = 'formulario_completo_responsive.html';
+        } else {
+            // Si no está autenticado, ir al login
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 </html>
