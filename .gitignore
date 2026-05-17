@@ -2,8 +2,7 @@
 node_modules/
 dist/
 
-# Variables de entorno (Seguridad)
-.env
+
 
 # Logs de error
 npm-debug.log*
