@@ -19,7 +19,7 @@ const pool = mysql.createPool({
     console.log("Conexión a la base de datos establecida");
     connection.release();
   } catch (error) {
-    console.error("Error al conectar a la base de datos:", error);
+    console.error("Error al conectar a la Base de Datos:", error);
   }
 })();
 

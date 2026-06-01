@@ -4,7 +4,7 @@ const db = require('../database/db_connect')
 
 async function loginUsuario(req, res) {
   try {
-    console.log('📥 Login request recibido:', req.body)
+    console.log(' Login request recibido:', req.body)
     const { username, password } = req.body
 
     if (!username || !password) {
@@ -13,7 +13,7 @@ async function loginUsuario(req, res) {
     }
     
     // Buscar usuario en la BD
-    console.log('🔍 Buscando usuario:', username)
+    console.log(' Buscando usuario:', username)
     const [rows] = await db.query('SELECT * FROM usuarios WHERE nombre = ?', [username])
     const user = rows[0]
 
