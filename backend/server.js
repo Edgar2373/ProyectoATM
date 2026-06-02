@@ -45,7 +45,7 @@ const createLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const PORT = 3000;
+const PORT = 8000;
 const bcrypt = require("bcrypt");
 
 async function generarHash(password) {
