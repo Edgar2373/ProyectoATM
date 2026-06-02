@@ -13,7 +13,7 @@ const imageSizes = {
   firma: [150, 150]
 }
 
-// Función helper para convertir checkbox a símbolo Unicode
+// Función helper para convertir checkbox a símbolo Unicode asd
 const check = (value) => (value === 'on' || value === true) ? '☑' : '☐'
 
 const generarInformeProgramacion = async (req, res) => {
