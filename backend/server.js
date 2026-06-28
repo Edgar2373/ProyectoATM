@@ -44,7 +44,7 @@ const createLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
-let hola;
+
 const PORT = process.env.PORT || 3000;
 const bcrypt = require("bcrypt");
 
