@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Formulario MOP Programación - ATM/UPS</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#135bec',
+              'background-light': '#f6f6f8',
+              'background-dark': '#101622'
+            },
+            fontFamily: {
+              display: ['Inter', 'sans-serif']
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      details > summary {
+        list-style: none;
+      }
+      details > summary::-webkit-details-marker {
+        display: none;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+      .sidebar-overlay {
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .sidebar-menu-btn {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s ease;
+      }
+
+      .sidebar-menu-btn:hover {
+        background-color: rgba(148, 163, 184, 0.1);
+      }
+
+      .sidebar-menu-btn.active {
+        background-color: rgba(59, 130, 246, 0.12);
+        color: #135bec;
+      }
+
+      .dark .sidebar-menu-btn.active {
+        background-color: rgba(59, 130, 246, 0.15);
+      }
+
+      .sidebar-chevron {
+        transition: transform 0.2s ease;
+        font-size: 1.2rem;
+      }
+
+      .sidebar-chevron.open {
+        transform: rotate(180deg);
+      }
+
+      .sidebar-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease;
+      }
+
+      .sidebar-submenu.open {
+        max-height: 1000px;
+      }
+
+      .sidebar-submenu a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0 0.5rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.5rem;
+        color: #64748b;
+        text-decoration: none;
+        background: rgba(148, 163, 184, 0.08);
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+      }
+
+      .dark .sidebar-submenu a {
+        color: #94a3b8;
+        background: rgba(148, 163, 184, 0.1);
+      }
+
+      .sidebar-submenu a:hover {
+        background-color: rgba(59, 130, 246, 0.15);
+        color: #135bec;
+        transform: translateX(4px);
+      }
+
+      .dark .sidebar-submenu a:hover {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+
+      .sidebar-item-btn {
+        width: 100%;
+        border: 0;
+        background: rgba(148, 163, 184, 0.06);
+        color: #475569;
+        padding: 0.6rem 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+
+      .dark .sidebar-item-btn {
+        background: rgba(148, 163, 184, 0.08);
+        color: #cbd5e1;
+      }
+
+      .sidebar-item-btn:hover {
+        background-color: rgba(59, 130, 246, 0.12);
+        color: #135bec;
+      }
+
+      .dark .sidebar-item-btn:hover {
+        background-color: rgba(59, 130, 246, 0.18);
+        color: #60a5fa;
+      }
+
+      .sidebar-submenu.nested {
+        margin-left: 0.5rem;
+        padding-left: 0.5rem;
+        border-left: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .dark .sidebar-submenu.nested {
+        border-left-color: rgba(148, 163, 184, 0.22);
+      }
+      
+      /* Estilos para Drag & Drop de imágenes */
+      .drop-zone {
+        border: 2px dashed #cbd5e1;
+        border-radius: 0.75rem;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: #f8fafc;
+        position: relative;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      .dark .drop-zone {
+        background: #1e293b;
+        border-color: #475569;
+      }
+      .drop-zone:hover {
+        border-color: #135bec;
+        background: rgba(19, 91, 236, 0.05);
+      }
+      .drop-zone.dragover {
+        border-color: #135bec;
+        background: rgba(19, 91, 236, 0.1);
+        border-style: solid;
+        transform: scale(1.02);
+      }
+      .drop-zone.has-file {
+        border-color: #22c55e;
+        border-style: solid;
+        background: rgba(34, 197, 94, 0.05);
+      }
+      .dark .drop-zone.has-file {
+        background: rgba(34, 197, 94, 0.1);
+      }
+      .drop-zone input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .drop-zone-icon {
+        font-size: 2.5rem;
+        color: #94a3b8;
+      }
+      .drop-zone.has-file .drop-zone-icon {
+        color: #22c55e;
+      }
+      .drop-zone-text {
+        color: #64748b;
+        font-size: 0.875rem;
+      }
+      .dark .drop-zone-text {
+        color: #94a3b8;
+      }
+      .drop-zone-text strong {
+        color: #135bec;
+      }
+      .drop-zone-preview {
+        max-width: 100%;
+        max-height: 150px;
+        border-radius: 0.5rem;
+        object-fit: contain;
+        display: none;
+      }
+      .drop-zone.has-file .drop-zone-preview {
+        display: block;
+      }
+      .drop-zone.has-file .drop-zone-placeholder {
+        display: none;
+      }
+      .drop-zone-filename {
+        font-size: 0.75rem;
+        color: #22c55e;
+        font-weight: 500;
+        word-break: break-all;
+        max-width: 100%;
+        display: none;
+      }
+      .drop-zone.has-file .drop-zone-filename {
+        display: block;
+      }
+      .drop-zone-remove {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .drop-zone.has-file .drop-zone-remove {
+        display: flex;
+      }
+      .drop-zone-remove:hover {
+        background: #dc2626;
+      }
+      /* Botones para móvil: cámara y archivos */
+      .drop-zone-mobile-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        width: 100%;
+        justify-content: center;
+      }
+      .drop-zone-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        z-index: 5;
+        position: relative;
+      }
+      .drop-zone-btn-camera {
+        background: #135bec;
+        color: white;
+      }
+      .drop-zone-btn-camera:hover {
+        background: #0f4ab5;
+      }
+      .drop-zone-btn-gallery {
+        background: #e2e8f0;
+        color: #334155;
+      }
+      .drop-zone-btn-gallery:hover {
+        background: #cbd5e1;
+      }
+      .dark .drop-zone-btn-gallery {
+        background: #334155;
+        color: #e2e8f0;
+      }
+      .dark .drop-zone-btn-gallery:hover {
+        background: #475569;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col"
+  >
+    <!-- Overlay para móvil (oculto por defecto) -->
+    <div
+      id="sidebarOverlay"
+      class="hidden fixed inset-0 sidebar-overlay z-30 lg:hidden"
+      onclick="closeSidebar()"
+    ></div>
+
+    <!-- Sidebar Navigation - Oculto en móvil, visible en desktop -->
+    <nav
+      id="sidebar"
+      class="fixed left-0 top-0 h-screen w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-lg flex flex-col z-40 overflow-hidden -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+    >
+      <div class="p-4 md:p-6 border-b border-slate-200 dark:border-slate-700">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">
+          Menú de Formularios
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Selecciona un formulario
+        </p>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 space-y-1">
+        <div>
+          <button class="sidebar-menu-btn" type="button" data-menu="incidentes" onclick="toggleSidebarMenu(this)">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-xl">warning</span>
+              <span>Incidentes</span>
+            </div>
+            <span class="sidebar-chevron">⌄</span>
+          </button>
+          <div class="sidebar-submenu" data-submenu="incidentes">
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="incidente-fallo" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">bolt</span>
+                  <span>Fallo</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="incidente-fallo">
+                <a href="formulario_mop_renovacion_responsive.html?origen=fallo&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de fallo</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=fallo&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de fallo</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="incidente-cambio-bateria" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">battery_unknown</span>
+                  <span>Cambio de batería</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="incidente-cambio-bateria">
+                <a href="formulario_mop_renovacion_responsive.html?origen=cambio-bateria&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP cambio de Batería</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=cambio-bateria&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe cambio de Batería</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <button class="sidebar-menu-btn" type="button" data-menu="requerimientos" onclick="toggleSidebarMenu(this)">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-xl">checklist</span>
+              <span>Requerimientos</span>
+            </div>
+            <span class="sidebar-chevron">⌄</span>
+          </button>
+          <div class="sidebar-submenu" data-submenu="requerimientos">
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-instalacion" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">construction</span>
+                  <span>Instalación</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-instalacion">
+                <a href="formulario_mop_programacion_responsive.html?origen=instalacion&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de Instalación</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=instalacion&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de Instalación</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-mantenimiento" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">schedule</span>
+                  <span>Programación de mantenimiento</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-mantenimiento">
+                <a href="formulario_mop_mantenimiento_preventivo.html?origen=programacion-mantenimiento&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de Mantenimiento</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=programacion-mantenimiento&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de Mantenimiento</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-correctiva" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">build</span>
+                  <span>Programación correctiva</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-correctiva">
+                <a href="formulario_mop_programacion_responsive.html?origen=programacion-correctiva&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP programación correctiva</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=programacion-correctiva&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe programación correctiva</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a
+          href="mis_informes.html"
+          id="sidebarMisInformes"
+          class="hidden items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all"
+        >
+          <span class="material-symbols-outlined text-xl">folder</span>
+          <span>Mis Informes</span>
+        </a>
+      </div>
+      <div class="p-4 border-t border-slate-200 dark:border-slate-700">
+        <button
+          id="sidebarLogoutBtn"
+          class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-all text-sm font-medium"
+        >
+          <span class="material-symbols-outlined text-lg">logout</span>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content - Offset en desktop, full width en móvil -->
+    <div class="lg:ml-64">
+      <!-- Header con Hamburguesa -->
+      <header
+        class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm"
+      >
+        <div
+          class="flex items-center p-4 justify-between max-w-6xl mx-auto w-full"
+        >
+          <!-- Botón Hamburguesa (solo móvil) -->
+          <button
+            id="hamburgerBtn"
+            class="lg:hidden text-slate-900 dark:text-white text-2xl"
+            onclick="openSidebar()"
+          >
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+
+          <div class="flex items-center gap-3 flex-1">
+            <span class="material-symbols-outlined text-primary text-3xl"
+              >checklist</span
+            >
+            <div>
+              <h1 id="formHeaderTitle" class="text-slate-900 dark:text-white font-bold text-sm">
+                MOP Programación
+              </h1>
+              <p id="formHeaderSubtitle" class="text-xs text-slate-500 dark:text-slate-400">
+                Procedimiento de Operación
+              </p>
+            </div>
+          </div>
+
+          <h2
+            class="text-slate-900 dark:text-white text-lg font-bold hidden md:block flex-1 text-center"
+          ></h2>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-1 w-full max-w-6xl mx-auto p-4 flex flex-col gap-4">
+        <form
+          id="mopForm"
+          enctype="multipart/form-data"
+          class="flex flex-col gap-4"
+          novalidate
+        >
+          <!-- 1. INFORMACIÓN INICIAL DEL MOP -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+            open
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-primary/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-primary/5"
+            >
+              <span class="material-symbols-outlined text-lg text-primary"
+                >info</span
+              >
+              1. Información Inicial del MOP
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div class="grid grid-cols-1 sm:grid-cols-1 gap-4">
+
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >Título del procedimiento</label
+                  >
+                  <input
+                    type="text"
+                    name="titulo_procedimiento_programacion"
+                    class="form-input w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                    placeholder="ej. INSTALACIÓN DE NUEVO UPS ABB POWERVALUE 11RT G3 LIB 1 KVA "
+                    required
+                  />
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >Fecha del MOP</label
+                  >
+                  <input
+                  id="fecha_mop"
+                    name="fecha_mop"
+                    class="form-input w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100" disabled
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >Duración Estimada</label
+                  >
+                  <select
+                    name="duracion_mop"
+                    class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm"
+                    placeholder="Selecciona el tiempo estimado"
+                  >
+                    <option value="">Selecciona el tiempo estimado</option>
+                    <option value="1h">1 hora</option>
+                    <option value="2h">2 horas</option>
+                    <option value="3h">3 horas</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >ATM y Lugar de la intervención</label
+                  >
+                  <input
+                    type="text"
+                    name="nombre_lugar"
+                    class="form-input w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                    placeholder="ej. ATM 507 - PACASMAYO"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >Número de Ticket</label
+                  >
+                  <input
+                    type="text"
+                    name="num_ticket"
+                    class="form-input w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                    placeholder="ej. TKT-2024-001"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >OT</label
+                  >
+                  <input
+                    type="text"
+                    name="num_ot"
+                    class="form-input w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                    placeholder="ej. OT-2024-001"
+                  />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- 2. DESCRIPCIÓN DE CRITICIDAD -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-orange-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-orange-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-orange-500"
+                >warning</span
+              >
+              2. Descripción de Criticidad del MOP
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div
+                class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4"
+              >
+                <h4
+                  class="font-semibold text-orange-900 dark:text-orange-200 mb-2"
+                >
+                  ⚠️ Riesgos y Consecuencias:
+                </h4>
+                <ul
+                  class="text-sm text-orange-800 dark:text-orange-300 space-y-1"
+                >
+                  <li>
+                    • La ejecución de maniobras incorrectas en los componentes
+                    internos del equipo UPS generaría la inoperatividad del
+                    mismo, y perdida de garantía.
+                  </li>
+                  <li>
+                    • Operación con impacto alto, debido a que la
+                    indisponibilidad temporal del sistema provoca la pérdida de
+                    monitoreo de los equipos.
+                  </li>
+                </ul>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >¿Requiere aprobación?</label
+                  >
+                  <div class="flex gap-4">
+                    <label class="flex items-center">
+                      <input
+                        type="radio"
+                        name="requiere_aprobacion"
+                        value="No"
+                        class="mr-2"
+                      />
+                      No
+                    </label>
+                    <label class="flex items-center">
+                      <input
+                        type="radio"
+                        name="requiere_aprobacion"
+                        value="Si"
+                        checked
+                        class="mr-2"
+                      />
+                      Si
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >Nivel de Criticidad</label
+                  >
+                  <select
+                    name="nivel_criticidad"
+                    class="form-select w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                    required
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="1">Bajo (1)</option>
+                    <option value="2">Medio (2)</option>
+                    <option value="3" selected>Alto (3)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- 3. PERSONAL NECESARIO -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-blue-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-blue-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-blue-500"
+                >group</span
+              >
+              3. Personal Necesario
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div
+                class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-sm text-blue-900 dark:text-blue-200"
+              >
+                <ul class="space-y-1">
+                  <li>✓ 01 técnico Electrónico/Electricista de GERER</li>
+                  <li>✓ 01 personal de Monitoreo y Gestión de UPS de GERER</li>
+                  <li>
+                    ✓ 01 personal de Monitoreo de UPS de ByF (validación de
+                    comunicación)
+                  </li>
+                  <li>✓ 01 personal de Portavalor (Resguardo)</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+
+          <!-- 4. MATERIAL NECESARIO -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-green-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-green-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-green-500"
+                >shopping_bag</span
+              >
+              4. Material Necesario - EPP Básico
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                  <thead class="bg-slate-100 dark:bg-slate-800">
+                    <tr>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Material
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Características
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        Validación
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Casco
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Casco Dieléctrico Tipo I, Clase E.
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        <input type="checkbox" name="material_check1" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Guantes
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Guantes de hilo con protección de nitrilo
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        <input type="checkbox" name="material_check2" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Lentes
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Lentes de seguridad / sobrelentes.
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        <input type="checkbox" name="material_check3" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Zapatos de seguridad
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Botines Dielectricos c/puntera composite
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        <input type="checkbox" name="material_check4" checked />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <!-- 5. HERRAMIENTAS NECESARIAS -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-purple-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-purple-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-purple-500"
+                >build</span
+              >
+              5. Herramientas Necesarias
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                  <thead class="bg-slate-100 dark:bg-slate-800">
+                    <tr>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Herramientas
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Características
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        Cantidad
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Maletín de herramientas
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Desarmadores (plano y estrella), alicates de corte,
+                        instrumentos de medición (Pinza Amperimétrica y/o
+                        Multímetro), etc.
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        1
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Celular
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Comunicación vía telefónica y email
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        1
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Laptop
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        Configuración de tarjeta de red
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-center"
+                      >
+                        1
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <!-- 6. OBSERVACIONES DEL DOCUMENTO -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-yellow-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-yellow-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-yellow-500"
+                >note</span
+              >
+              6. Observaciones del Documento
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div
+                class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 text-sm text-yellow-900 dark:text-yellow-200"
+              >
+                <ul class="space-y-2">
+                  <li>
+                    • Se deberá comunicar a las áreas correspondientes el inicio
+                    de la actividad.
+                  </li>
+                  <li>
+                    • Registro de Parámetros del UPS existente (voltaje, carga,
+                    estado de batería, alarma).
+                  </li>
+                  <li>
+                    • Transferencia a Bypass manual (conmutador del tablero) por
+                    aislamiento del UPS.
+                  </li>
+                  <li>
+                    • Desconexión y Retiro de UPS y Transformador de Aislamiento
+                    existente.
+                  </li>
+                  <li>
+                    • Montaje e Instalación de nuevos equipos: UPS y Transformador de Aislamiento GLE.
+                  </li>
+                  <li>Transformador de Aislamiento GLE.</li>
+                  <li>
+                    • Configuración de tarjeta de red y validación de
+                    comunicación por monitoreo.
+                  </li>
+                  <li>
+                    • Registro de Parámetros de UPS: Voltaje de entrada de
+                    Transformador y UPS: Rango de 220 VAC ±20%, Voltaje de
+                    salida del Transformador y UPS: Rango de 220 VAC ±8%,
+                    Voltaje entre neutro y tierra: No deberá exceder los 2 VAC.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </details>
+
+          <!-- 7. PASOS DEL PROCEDIMIENTO -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+            open
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-primary/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-primary/5"
+            >
+              <span class="material-symbols-outlined text-lg text-primary"
+                >task_alt</span
+              >
+              7. Pasos del Procedimiento
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-6 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso1_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 1: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Se deberá realizar el registro fotográfico del estado
+                      inicial del cajero automático y de los equipos a
+                      intervenir.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen1.png"
+                        alt="Imagen referencial 1"
+                        class="w-[150px] h-[200px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 1. Estado inicial de ATM
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso2_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 2: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El técnico informa a base que se encuentra en sitio para
+                      iniciar la actividad asignada.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso3_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 3: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      La Empresa de Transporte de Valores (ETV) asignada será
+                      responsable de la apertura de la tapa superior del ATM.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen2.png"
+                        alt="Imagen referencial 2"
+                        class="w-[150px] h-[200px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 2. Empresa de transporte de valores
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso4_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 4: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El técnico realiza la identificación visual de los equipos
+                      y módulos existentes internos del cajero.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen3.png"
+                        alt="Imagen referencial 3"
+                        class="w-[250px] h-[150px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 3. Equipos existentes en el ATM
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso5_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 5: TABLERO ELÉCTRICO
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Se conmuta el tablero eléctrico a la posición de bypass
+                      manual, garantizando la continuidad del suministro
+                      eléctrico.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso6_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 6: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El personal técnico inicia con la desconexión y retiro de
+                      los equipos existentes (UPS y Transformador).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso7_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 7: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El técnico realiza la identificación visual de los equipos
+                      y módulos internos del cajero.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen4.png"
+                        alt="Imagen referencial 4"
+                        class="w-[250px] h-[150px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 4. Identificación visual del UPS y
+                      Transformador
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso8_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 8: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Durante la ejecución de la instalación, se deberá realizar
+                      el registro fotográfico correspondiente como evidencia del
+                      trabajo realizado.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso9_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 9: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El técnico instalará el nuevo transformador de
+                      aislamiento, asegurando su correcta ubicación y fijación.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen5.png"
+                        alt="Imagen referencial 5"
+                        class="w-[150px] h-[200px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 5. Instalación de transformador
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso10_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 10: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El técnico instalará el nuevo UPS,
+                      asegurando su correcta ubicación y fijación.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen6.png"
+                        alt="Imagen referencial 6"
+                        class="w-[150px] h-[200px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 6. Instalación de UPS
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso11_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 11: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El técnico realizará el conexionado eléctrico del
+                      transformador de aislamiento y el UPS
+                      nuevo.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen7.png"
+                        alt="Imagen referencial 7"
+                        class="w-[250px] h-[200px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 7. Conexionado eléctrico
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso12_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 12: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      La tarjeta de red estará instalada configurada, se
+                      realizará la conexión física del Patch Cord hacia el punto
+                      de red disponible del cajero automático.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen8.png"
+                        alt="Imagen referencial 8"
+                        class="w-[250px] h-[200px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 8. Tarjeta red instalada al UPS.
+                    </p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      <strong>Nota:</strong>
+                    </p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">
+                      Registro en fotografía de la MAC y la rotulación del
+                      PatchCord de la tarjeta.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso13_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 13: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Se realizan las mediciones eléctricas de entrada y salida
+                      del transformador de aislamiento.
+                    </p>
+                    <div class="mt-4 overflow-x-auto">
+                      <table class="w-full text-sm border-collapse">
+                        <thead class="bg-slate-200 dark:bg-slate-700">
+                          <tr>
+                            <th
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2 text-left"
+                            >
+                              MEDICIÓN
+                            </th>
+                            <th
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2 text-left"
+                            >
+                              VALOR ENTRADA
+                            </th>
+                            <th
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2 text-left"
+                            >
+                              VALOR SALIDA
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              Línea – Neutro (L–N)
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="valor_entradaln"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="valor_salidaln"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              Línea – Tierra (L–T)
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="valor_entradalt"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="valor_salidalt"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              Neutro – Tierra (N–T)
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="valor_entradant"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="valor_salidant"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Tabla 01. Mediciones entrada y salida del Transformador de
+                      Aislamiento
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso14_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 14: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Se procede al encendido del UPS, conmutación a modo normal
+                      de operación y verificación de parámetros (Entrada y
+                      Salida de UPS, Carga, Autonomía de la batería, Voltaje
+                      flotante y Bus DC).
+                    </p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 9. Visualización del panel en
+                      parámetros.
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen9.png"
+                        alt="Imagen referencial 9"
+                        class="w-[300px] h-[150px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso15_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 15: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Se realizan las mediciones eléctricas de entrada y salida
+                      del UPS.
+                    </p>
+                    <div class="mt-4 overflow-x-auto">
+                      <table class="w-full text-sm border-collapse">
+                        <thead class="bg-slate-200 dark:bg-slate-700">
+                          <tr>
+                            <th
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2 text-left"
+                            >
+                              MEDICIÓN
+                            </th>
+                            <th
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2 text-left"
+                            >
+                              VALOR ENTRADA
+                            </th>
+                            <th
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2 text-left"
+                            >
+                              VALOR SALIDA
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              Línea – Neutro (L–N)
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="ups_valor_entradaln"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="ups_valor_salidaln"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              Línea – Tierra (L–T)
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="ups_valor_entradalt"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="ups_valor_salidalt"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              Neutro – Tierra (N–T)
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="ups_valor_entradant"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                            <td
+                              class="border border-slate-300 dark:border-slate-600 px-3 py-2"
+                            >
+                              <input
+                                type="text"
+                                name="ups_valor_salidant"
+                                class="form-input w-full rounded px-2 py-1"
+                                placeholder="VAC / MVAC"
+                              />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Tabla 02. Mediciones de entrada y salida del UPS
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso16_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 16: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Personal Técnico realiza el registro fotográfico final,
+                      evidenciando los equipos instalados, el correcto
+                      conexionado y el estado operativo del UPS.
+                    </p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 10. Equipos Instalados y conexionados
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen10.png"
+                        alt="Imagen referencial 10"
+                        class="w-[250px] h-[150px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso17_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 17: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Personal Técnico valida la conexión en el UPS con Switch,
+                      también el rotulado del Patch Cord.
+                    </p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      Imagen referencial 11. Rotulación de Patch Cord
+                    </p>
+                    <div class="mt-3 w-fit">
+                      <img
+                        src="img/imagen11.png"
+                        alt="Imagen referencial 11"
+                        class="w-[250px] h-[200px] rounded-lg border border-slate-200 dark:border-slate-700"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso18_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 18: BBVA
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Se valida el funcionamiento del UPS y la configuración de
+                      la tarjeta de red con Gestión de Canales.
+                    </p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                      <strong>Nota:</strong>
+                    </p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">
+                      Se verifica validando la dirección IP otorgada.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso19_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 19: CAJERO ATM
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      El técnico notifica a la Empresa de Transporte de Valores
+                      asignada la conclusión de las actividades, para que
+                      realicen el cierre del ATM.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso20_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 20: BBVA
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Se comunica vía correo a los responsables de Banco de la
+                      culminación del servicio.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/50 py-4 rounded">
+                <div class="flex items-start gap-4">
+                  <input
+                    type="checkbox"
+                    name="paso21_check"
+                    class="mt-1 cursor-pointer"
+                  />
+                  <div class="flex-1">
+                    <h4
+                      class="font-semibold text-slate-900 dark:text-slate-100"
+                    >
+                      Paso 21: BBVA
+                    </h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      Fin del procedimiento.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- 8. RECOMENDACIONES Y OBSERVACIONES -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-cyan-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-cyan-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-cyan-500"
+                >lightbulb</span
+              >
+              8. Recomendaciones y Observaciones
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                  <thead class="bg-slate-100 dark:bg-slate-800">
+                    <tr>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        RECOMENDACIONES
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        OBSERVACIONES
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <textarea
+                          name="mop_recomendaciones"
+                          rows="4"
+                          class="form-textarea w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                          placeholder="Ingrese las recomendaciones del procedimiento..."
+                        ></textarea>
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <textarea
+                          name="mop_observaciones"
+                          rows="4"
+                          class="form-textarea w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                          placeholder="Ingrese las observaciones adicionales..."
+                        ></textarea>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <!-- 9. DATOS DEL TÉCNICO -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-indigo-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-indigo-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-indigo-500"
+                >badge</span
+              >
+              9. Datos del Técnico
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                  <thead class="bg-slate-100 dark:bg-slate-800">
+                    <tr>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Fecha de visita
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Nombre y Apellidos
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        DNI
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Hora Inicio
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Hora Término
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Tipo de Servicio
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Firma
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="date"
+                          name="fecha_visita"
+                          class="form-input w-full rounded px-2 py-1"
+                          required
+                        />
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <select
+                          id="selectTecnico"
+                          name="nombre_tecnico"
+                          class="form-select w-full rounded px-2 py-1"
+                          required
+                        >
+                          <option value="">Seleccionar técnico...</option>
+                          <option
+                            value="GUTIERREZ MARTINEZ, DIEGO ALEXIS"
+                            data-dni="73499383"
+                          >
+                            GUTIERREZ MARTINEZ, DIEGO ALEXIS - TÉCNICO
+                            ELECTRÓNICO
+                          </option>
+                          <option
+                            value="JARA MURRIETA, ANTONIO EDUARDO"
+                            data-dni="73316692"
+                          >
+                            JARA MURRIETA, ANTONIO EDUARDO - TÉCNICO
+                            ELECTRICISTA
+                          </option>
+                          <option
+                            value="LOPEZ VILLEGAS, JESUS ALEXANDER"
+                            data-dni="72523544"
+                          >
+                            LOPEZ VILLEGAS, JESUS ALEXANDER - TÉCNICO
+                            ELECTRÓNICO
+                          </option>
+                          <option
+                            value="FERNANDEZ GONZALO, ADLER JONATHAN"
+                            data-dni="76132450"
+                          >
+                            FERNANDEZ GONZALO, ADLER JONATHAN - TÉCNICO
+                            ELECTRICISTA
+                          </option>
+                          <option
+                            value="CHUQUIZUTA BASILIO, HARRY KENYN"
+                            data-dni="70590078"
+                          >
+                            CHUQUIZUTA BASILIO, HARRY KENYN - TÉCNICO
+                            ELECTRICISTA
+                          </option>
+                          <option
+                            value="BLANCO GALVEZ, MAICOL ALEXANDER"
+                            data-dni="60266365"
+                          >
+                            BLANCO GALVEZ, MAICOL ALEXANDER - TÉCNICO
+                            ELECTRICISTA
+                          </option>
+                        </select>
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="text"
+                          id="dniTecnico"
+                          name="dni_tecnico"
+                          class="form-input w-full rounded px-2 py-1 bg-slate-100 dark:bg-slate-700"
+                          readonly
+                        />
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="time"
+                          name="hora_inicio"
+                          class="form-input w-full rounded px-2 py-1"
+                          required
+                        />
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="time"
+                          name="hora_termino"
+                          class="form-input w-full rounded px-2 py-1"
+                          required
+                        />
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="text"
+                          name="tipo_servicio"
+                          class="form-input w-full rounded px-2 py-1"
+                          placeholder="Programación / Renovación"
+                          required
+                        />
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="file"
+                          name="firma"
+                          accept="image/*"
+                          capture="environment"
+                          class="form-input w-full rounded px-2 py-1"
+                          required
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <!-- 10. DATOS DE REVISIÓN Y APROBACIÓN -->
+          <details
+            class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center gap-3 bg-gradient-to-r from-pink-500/10 to-transparent px-6 py-4 font-semibold text-slate-900 dark:text-slate-100 hover:bg-pink-500/5"
+            >
+              <span class="material-symbols-outlined text-lg text-pink-500"
+                >verified_user</span
+              >
+              10. Datos de Revisión y Aprobación
+              <span
+                class="material-symbols-outlined ml-auto text-lg transition-transform group-open:rotate-180"
+                >expand_more</span
+              >
+            </summary>
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 px-6 py-4"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                  <thead class="bg-slate-100 dark:bg-slate-800">
+                    <tr>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Revisado por:
+                      </th>
+                      <th
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left"
+                      >
+                        Aprobado por:
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="text"
+                          name="nombre_revisador"
+                          value="Banessa Herrera O."
+                          class="form-input w-full rounded px-2 py-1"
+                          placeholder="Nombre"
+                          disabled
+                        />
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="text"
+                          name="nombre_aprobador"
+                          value="Daniela Ale A."
+                          class="form-input w-full rounded px-2 py-1"
+                          placeholder="Nombre"
+                          disabled
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="date"
+                          name="fecha_revisado_mop"
+                          class="form-input w-full rounded px-2 py-1"
+                          
+                        />
+                      </td>
+                      <td
+                        class="border border-slate-200 dark:border-slate-700 px-4 py-2"
+                      >
+                        <input
+                          type="date"
+                          name="fecha_aprobado_mop"
+                          class="form-input w-full rounded px-2 py-1"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+        </form>
+      </main>
+
+      <!-- Footer Action -->
+      <footer
+        class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 sticky bottom-0 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+      >
+        <div class="max-w-6xl mx-auto w-full flex flex-col gap-3">
+          <button
+            type="submit"
+            form="mopForm"
+            id="submitBtn"
+            class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <span id="btnText">Generar MOP</span>
+            <span class="material-symbols-outlined text-[20px]">download</span>
+          </button>
+          <p class="text-xs text-center text-slate-400 dark:text-slate-500">
+            Los datos se guardarán automáticamente
+          </p>
+        </div>
+      </footer>
+    </div>
+        <script src="./js/formulario_programacion.js?v=6"></script>
+  </body>
+</html>

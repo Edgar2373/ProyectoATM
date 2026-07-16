@@ -1,0 +1,8 @@
+ {
+    "nombre_cliente": "Cliente Ejemplo S.A.",
+    "codigo_documento": "DOC-001",
+    "fecha_ejecucion": "2024-12-01",
+    "nombre_lugar": "Sucursal Central",
+    "descripcion_antecedente": "Se identificaron componentes defectuosos en el ATM.",
+    "descripcion_conclusiones": "Se reemplazaron los componentes defectuosos y se verificó el correcto funcionamiento del sistema."
+}

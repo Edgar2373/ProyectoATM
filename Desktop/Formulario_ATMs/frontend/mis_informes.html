@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mis Informes - Sistema Técnico</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#135bec',
+              'background-light': '#f6f6f8',
+              'background-dark': '#101622'
+            },
+            fontFamily: {
+              display: ['Inter', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        min-height: 100dvh;
+      }
+      .sidebar-overlay {
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      /* Animación de entrada para las tarjetas de stats */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .stat-card {
+        animation: fadeInUp 0.4s ease both;
+      }
+      .stat-card:nth-child(1) {
+        animation-delay: 0.05s;
+      }
+      .stat-card:nth-child(2) {
+        animation-delay: 0.12s;
+      }
+      .stat-card:nth-child(3) {
+        animation-delay: 0.19s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .informe-row {
+        animation: fadeIn 0.3s ease both;
+      }
+
+      /* Spinner */
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .spin {
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+      }
+
+      /* Skeleton shimmer */
+      @keyframes shimmer {
+        0% {
+          background-position: -400px 0;
+        }
+        100% {
+          background-position: 400px 0;
+        }
+      }
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #e2e8f0 25%,
+          #f1f5f9 50%,
+          #e2e8f0 75%
+        );
+        background-size: 800px 100%;
+        animation: shimmer 1.4s ease infinite;
+        border-radius: 6px;
+      }
+      .dark .skeleton {
+        background: linear-gradient(
+          90deg,
+          #1e293b 25%,
+          #334155 50%,
+          #1e293b 75%
+        );
+        background-size: 800px 100%;
+      }
+      
+      /* Sidebar menu dropdown styles */
+      .sidebar-menu-btn {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s ease;
+      }
+      
+      .sidebar-menu-btn:hover {
+        background-color: rgba(148, 163, 184, 0.1);
+      }
+      
+      .sidebar-menu-btn.active {
+        background-color: rgba(59, 130, 246, 0.12);
+        color: #135bec;
+      }
+      
+      .dark .sidebar-menu-btn.active {
+        background-color: rgba(59, 130, 246, 0.15);
+      }
+      
+      .sidebar-chevron {
+        transition: transform 0.2s ease;
+        font-size: 1.2rem;
+      }
+      
+      .sidebar-chevron.open {
+        transform: rotate(180deg);
+      }
+      
+      .sidebar-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease;
+      }
+      
+      .sidebar-submenu.open {
+        max-height: 1000px;
+      }
+      
+      .sidebar-submenu a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0 0.5rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.5rem;
+        color: #64748b;
+        text-decoration: none;
+        background: rgba(148, 163, 184, 0.08);
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+      }
+      
+      .dark .sidebar-submenu a {
+        color: #94a3b8;
+        background: rgba(148, 163, 184, 0.1);
+      }
+      
+      .sidebar-submenu a:hover {
+        background-color: rgba(59, 130, 246, 0.15);
+        color: #135bec;
+        transform: translateX(4px);
+      }
+      
+      .dark .sidebar-submenu a:hover {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+
+      .sidebar-item-btn {
+        width: 100%;
+        border: 0;
+        background: rgba(148, 163, 184, 0.06);
+        color: #475569;
+        padding: 0.6rem 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+
+      .dark .sidebar-item-btn {
+        background: rgba(148, 163, 184, 0.08);
+        color: #cbd5e1;
+      }
+
+      .sidebar-item-btn:hover {
+        background-color: rgba(59, 130, 246, 0.12);
+        color: #135bec;
+      }
+
+      .dark .sidebar-item-btn:hover {
+        background-color: rgba(59, 130, 246, 0.18);
+        color: #60a5fa;
+      }
+
+      .sidebar-submenu.nested {
+        margin-left: 0.5rem;
+        padding-left: 0.5rem;
+        border-left: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .dark .sidebar-submenu.nested {
+        border-left-color: rgba(148, 163, 184, 0.22);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased"
+  >
+    <!-- Overlay para móvil -->
+    <div
+      id="sidebarOverlay"
+      class="hidden fixed inset-0 sidebar-overlay z-30 lg:hidden"
+      onclick="closeSidebar()"
+    ></div>
+
+    <!-- Sidebar -->
+    <nav
+      id="sidebar"
+      class="fixed left-0 top-0 h-screen w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-lg flex flex-col z-40 overflow-hidden -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+    >
+      <div class="p-4 md:p-6 border-b border-slate-200 dark:border-slate-700">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">
+          Menú de Formularios
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Selecciona un formulario
+        </p>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 space-y-1">
+        <!-- Incidentes Menu -->
+        <div>
+          <button class="sidebar-menu-btn" type="button" data-menu="incidentes" onclick="toggleSidebarMenu(this)">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-xl">warning</span>
+              <span>Incidentes</span> 
+            </div>
+            <span class="sidebar-chevron">⌄</span>
+          </button>
+          <div class="sidebar-submenu" data-submenu="incidentes">
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="incidente-fallo" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">bolt</span>
+                  <span>Fallo</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="incidente-fallo">
+                <a href="formulario_mop_renovacion_responsive.html?origen=fallo&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de fallo</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=fallo&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de fallo</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="incidente-cambio-bateria" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">battery_unknown</span>
+                  <span>Cambio de batería</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="incidente-cambio-bateria">
+                <a href="formulario_mop_renovacion_responsive.html?origen=cambio-bateria&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP cambio de batería</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=cambio-bateria&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe cambio de batería</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Requerimientos Menu -->
+        <div>
+          <button class="sidebar-menu-btn" type="button" data-menu="requerimientos" onclick="toggleSidebarMenu(this)">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-xl">checklist</span>
+              <span>Requerimientos</span>
+            </div>
+            <span class="sidebar-chevron">⌄</span>
+          </button>
+          <div class="sidebar-submenu" data-submenu="requerimientos">
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-instalacion" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">construction</span>
+                  <span>Instalación</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-instalacion">
+                <a href="formulario_mop_programacion_responsive.html?origen=instalacion&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de instalación</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=instalacion&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de instalación</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-mantenimiento" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">schedule</span>
+                  <span>Programación de mantenimiento</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-mantenimiento">
+                <a href="formulario_mop_mantenimiento_preventivo.html" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de mantenimiento</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=programacion-mantenimiento&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de mantenimiento</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-correctiva" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">build</span>
+                  <span>Programación correctiva</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-correctiva">
+                <a href="formulario_mop_programacion_responsive.html?origen=programacion-correctiva&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de programación correctiva</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=programacion-correctiva&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de programación correctiva</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mis Informes Link -->
+        <a
+          href="mis_informes.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white font-medium transition-all hover:bg-blue-600"
+        >
+          <span class="material-symbols-outlined text-xl">folder</span>
+          <span>Mis Informes</span>
+        </a>
+      </div>
+      <div class="p-4 border-t border-slate-200 dark:border-slate-700">
+        <button
+          id="sidebarLogoutBtn"
+          class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-all text-sm font-medium"
+        >
+          <span class="material-symbols-outlined text-lg">logout</span>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64">
+      <!-- Header -->
+      <header
+        class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm"
+      >
+        <div
+          class="flex items-center p-4 justify-between max-w-6xl mx-auto w-full gap-3"
+        >
+          <!-- Hamburguesa (solo móvil) -->
+          <button
+            id="hamburgerBtn"
+            class="lg:hidden text-slate-900 dark:text-white"
+            onclick="openSidebar()"
+          >
+            <span class="material-symbols-outlined text-2xl">menu</span>
+          </button>
+
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-2xl"
+              >folder_open</span
+            >
+            <div>
+              <h1
+                class="text-slate-900 dark:text-white font-bold text-sm sm:text-base leading-tight"
+              >
+                Mis Informes
+              </h1>
+              <p
+                class="text-xs text-slate-500 dark:text-slate-400 leading-tight"
+              >
+                Panel de administración
+              </p>
+            </div>
+          </div>
+
+          <div class="flex-1"></div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="max-w-6xl mx-auto p-4 py-6 flex flex-col gap-6">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div
+            class="stat-card bg-white dark:bg-slate-900 rounded-xl shadow-sm p-4 border border-slate-200 dark:border-slate-800 flex items-center gap-4"
+          >
+            <div
+              class="w-12 h-12 shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-primary text-2xl"
+                >description</span
+              >
+            </div>
+            <div>
+              <p
+                class="text-2xl font-bold text-slate-900 dark:text-white"
+                id="totalInformes"
+              >
+                <span class="skeleton inline-block w-8 h-7 align-middle"></span>
+              </p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Total Informes
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="stat-card bg-white dark:bg-slate-900 rounded-xl shadow-sm p-4 border border-slate-200 dark:border-slate-800 flex items-center gap-4"
+          >
+            <div
+              class="w-12 h-12 shrink-0 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-green-600 text-2xl"
+                >calendar_today</span
+              >
+            </div>
+            <div>
+              <p
+                class="text-2xl font-bold text-slate-900 dark:text-white"
+                id="esteMes"
+              >
+                <span class="skeleton inline-block w-8 h-7 align-middle"></span>
+              </p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Este Mes
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="stat-card bg-white dark:bg-slate-900 rounded-xl shadow-sm p-4 border border-slate-200 dark:border-slate-800 flex items-center gap-4"
+          >
+            <div
+              class="w-12 h-12 shrink-0 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-purple-600 text-2xl"
+                >schedule</span
+              >
+            </div>
+            <div>
+              <p
+                class="text-lg font-bold text-slate-900 dark:text-white leading-tight"
+                id="ultimoInforme"
+              >
+                <span
+                  class="skeleton inline-block w-12 h-6 align-middle"
+                ></span>
+              </p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Último Informe
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs de navegación -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div class="flex border-b border-slate-200 dark:border-slate-700">
+            <button id="tabInformes" onclick="cambiarTab('informes')"
+              class="flex-1 px-4 py-3 text-sm font-medium text-primary border-b-2 border-primary bg-primary/5 flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg">description</span>
+              <span class="hidden sm:inline">Informes Técnicos</span>
+              <span class="sm:hidden">Informes</span>
+            </button>
+            <button id="tabProgramacion" onclick="cambiarTab('programacion')"
+              class="flex-1 px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg">checklist</span>
+              <span class="hidden sm:inline">MOP Programación</span>
+              <span class="sm:hidden">Prog.</span>
+            </button>
+            <button id="tabRenovacion" onclick="cambiarTab('renovacion')"
+              class="flex-1 px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg">autorenew</span>
+              <span class="hidden sm:inline">MOP Renovación</span>
+              <span class="sm:hidden">Renov.</span>
+            </button>
+            <button id="tabMantenimiento" onclick="cambiarTab('mantenimiento')"
+              class="flex-1 px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg">build</span>
+              <span class="hidden sm:inline">MOP Mantenimiento</span>
+              <span class="sm:hidden">Mant.</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Informes -->
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+        >
+          <!-- Toolbar -->
+          <div
+            class="p-4 border-b border-slate-200 dark:border-slate-700 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <h3 id="listTitle" class="text-base font-semibold text-slate-900 dark:text-white">
+              Informes Técnicos
+            </h3>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <div class="relative flex-1 sm:flex-none">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] pointer-events-none"
+                  >search</span
+                >
+                <input
+                  id="searchInput"
+                  type="text"
+                  placeholder="Buscar..."
+                  class="w-full sm:w-56 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-10 pl-9 pr-3 text-sm"
+                />
+              </div>
+              <button
+                id="searchBtn"
+                class="shrink-0 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium flex items-center gap-1.5"
+              >
+                <span class="material-symbols-outlined text-[16px]"
+                  >search</span
+                >
+                <span class="hidden xs:inline">Buscar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Loading skeletons -->
+          <div
+            id="loadingState"
+            class="p-4 flex flex-col divide-y divide-slate-100 dark:divide-slate-800"
+          >
+            <div class="py-4 flex items-center gap-4">
+              <div class="skeleton w-10 h-10 rounded-lg shrink-0"></div>
+              <div class="flex-1 flex flex-col gap-2">
+                <div class="skeleton h-4 w-48 rounded"></div>
+                <div class="skeleton h-3 w-32 rounded"></div>
+              </div>
+              <div
+                class="skeleton h-9 w-28 rounded-lg shrink-0 hidden sm:block"
+              ></div>
+            </div>
+            <div class="py-4 flex items-center gap-4">
+              <div class="skeleton w-10 h-10 rounded-lg shrink-0"></div>
+              <div class="flex-1 flex flex-col gap-2">
+                <div class="skeleton h-4 w-56 rounded"></div>
+                <div class="skeleton h-3 w-36 rounded"></div>
+              </div>
+              <div
+                class="skeleton h-9 w-28 rounded-lg shrink-0 hidden sm:block"
+              ></div>
+            </div>
+            <div class="py-4 flex items-center gap-4">
+              <div class="skeleton w-10 h-10 rounded-lg shrink-0"></div>
+              <div class="flex-1 flex flex-col gap-2">
+                <div class="skeleton h-4 w-40 rounded"></div>
+                <div class="skeleton h-3 w-28 rounded"></div>
+              </div>
+              <div
+                class="skeleton h-9 w-28 rounded-lg shrink-0 hidden sm:block"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div
+            id="emptyState"
+            class="hidden p-12 flex flex-col items-center text-center gap-3"
+          >
+            <div
+              class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center"
+            >
+              <span
+                class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600"
+                >folder_off</span
+              >
+            </div>
+            <div>
+              <p class="font-semibold text-slate-700 dark:text-slate-300">
+                No hay informes todavía
+              </p>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Genera tu primer informe desde el formulario
+              </p>
+            </div>
+            <a
+              href="formulario_completo_responsive.html"
+              class="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+            >
+              <span class="material-symbols-outlined text-[18px]">add</span>
+              Crear primer informe
+            </a>
+          </div>
+
+          <!-- No results -->
+          <div
+            id="noResultsState"
+            class="hidden p-10 flex flex-col items-center text-center gap-2"
+          >
+            <span
+              class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600"
+              >search_off</span
+            >
+            <p class="font-semibold text-slate-700 dark:text-slate-300">
+              Sin resultados
+            </p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              No se encontraron informes con ese código
+            </p>
+          </div>
+
+          <!-- Error State -->
+          <div
+            id="errorState"
+            class="hidden p-10 flex flex-col items-center text-center gap-2"
+          >
+            <span class="material-symbols-outlined text-4xl text-red-400"
+              >error</span
+            >
+            <p class="font-semibold text-red-600 dark:text-red-400">
+              Error al cargar informes
+            </p>
+            <button
+              onclick="cargarInformes()"
+              class="mt-2 text-sm text-primary hover:underline flex items-center gap-1"
+            >
+              <span class="material-symbols-outlined text-[16px]">refresh</span
+              >Reintentar
+            </button>
+          </div>
+
+          <!-- Lista -->
+          <div
+            id="informesList"
+            class="hidden divide-y divide-slate-100 dark:divide-slate-800"
+          >
+            <!-- Filas dinámicas -->
+          </div>
+
+          <!-- Paginación -->
+          <div
+            id="paginationContainer"
+            class="hidden p-4 border-t border-slate-200 dark:border-slate-700"
+          >
+            <div
+              class="flex flex-col sm:flex-row items-center justify-between gap-3"
+            >
+              <p
+                id="paginationInfo"
+                class="text-xs text-slate-500 dark:text-slate-400"
+              ></p>
+              <div id="paginationControls" class="flex items-center gap-1">
+                <!-- Botones dinámicos -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <!-- /lg:ml-64 -->
+
+    <script>
+      // ── Sidebar helpers ──────────────────────────────────────────
+      function openSidebar() {
+        document.getElementById('sidebar').classList.remove('-translate-x-full')
+        document.getElementById('sidebarOverlay').classList.remove('hidden')
+      }
+      function closeSidebar() {
+        document.getElementById('sidebar').classList.add('-translate-x-full')
+        document.getElementById('sidebarOverlay').classList.add('hidden')
+      }
+      
+      function toggleSidebarMenu(button) {
+        const menuName = button.getAttribute('data-menu')
+        const submenu = document.querySelector(`[data-submenu="${menuName}"]`)
+        const chevron = button.querySelector('.sidebar-chevron')
+        
+        submenu.classList.toggle('open')
+        chevron.classList.toggle('open')
+      }
+
+      function toggleSidebarItemMenu(button) {
+        const itemName = button.getAttribute('data-item-menu')
+        const submenu = document.querySelector(`[data-item-submenu="${itemName}"]`)
+        const chevron = button.querySelector('.sidebar-chevron')
+
+        submenu.classList.toggle('open')
+        chevron.classList.toggle('open')
+      }
+      
+      document
+        .querySelectorAll('#sidebar a')
+        .forEach(l => l.addEventListener('click', closeSidebar))
+
+      document.getElementById('sidebarLogoutBtn').addEventListener('click', () => {
+        if (confirm('¿Seguro que deseas cerrar sesión?')) {
+          localStorage.removeItem('user')
+          window.location.href = 'login.html'
+        }
+      })
+
+      // ── UI state helpers ─────────────────────────────────────────
+      function showState(stateName) {
+        ;[
+          'loadingState',
+          'emptyState',
+          'noResultsState',
+          'errorState',
+          'informesList'
+        ].forEach(id => {
+          const el = document.getElementById(id)
+          el.classList.toggle('hidden', id !== stateName)
+        })
+      }
+
+      // ── Pagination state ────────────────────────────────────────
+      let currentPage = 1
+      let isSearchMode = false
+      let currentSearchQuery = ''
+      let totalInformesCount = 0
+      let currentDocType = 'informes' // 'informes', 'programacion', 'renovacion'
+
+      // ── Tab configuration ────────────────────────────────────────
+      const tabConfig = {
+        informes: {
+          listUrl: 'https://form.gererlenergie.com/api/informes',
+          searchUrl: 'https://form.gererlenergie.com/api/informes/traer',
+          downloadUrl: 'https://form.gererlenergie.com/api/informes',
+          downloadSuffix: '/download',
+          deleteUrl: 'https://form.gererlenergie.com/api/informes',
+          title: 'Informes Técnicos',
+          icon: 'description',
+          iconBg: 'bg-blue-100 dark:bg-blue-900/30',
+          iconColor: 'text-primary'
+        },
+        programacion: {
+          listUrl: 'https://form.gererlenergie.com/api/mops-programacion',
+          searchUrl: 'https://form.gererlenergie.com/api/mops-programacion/buscar',
+          downloadUrl: 'https://form.gererlenergie.com/api/mops-programacion/descargar',
+          downloadSuffix: '',
+          deleteUrl: 'https://form.gererlenergie.com/api/mops-programacion',
+          title: 'MOPs de Programación',
+          icon: 'checklist',
+          iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+          iconColor: 'text-emerald-600 dark:text-emerald-400'
+        },
+        renovacion: {
+          listUrl: 'https://form.gererlenergie.com/api/mops-renovacion',
+          searchUrl: 'https://form.gererlenergie.com/api/mops-renovacion/buscar',
+          downloadUrl: 'https://form.gererlenergie.com/api/mops-renovacion/descargar',
+          downloadSuffix: '',
+          deleteUrl: 'https://form.gererlenergie.com/api/mops-renovacion',
+          title: 'MOPs de Renovación',
+          icon: 'autorenew',
+          iconBg: 'bg-amber-100 dark:bg-amber-900/30',
+          iconColor: 'text-amber-600 dark:text-amber-400'
+        },
+        mantenimiento: {
+          listUrl: 'https://form.gererlenergie.com/api/mops-mantenimiento',
+          searchUrl: 'https://form.gererlenergie.com/api/mops-mantenimiento/buscar',
+          downloadUrl: 'https://form.gererlenergie.com/api/mops-mantenimiento/descargar',
+          downloadSuffix: '',
+          deleteUrl: 'https://form.gererlenergie.com/api/mops-mantenimiento',
+          title: 'MOPs Mantenimiento Preventivo',
+          icon: 'build',
+          iconBg: 'bg-purple-100 dark:bg-purple-900/30',
+          iconColor: 'text-purple-600 dark:text-purple-400'
+        }
+      }
+
+      // ── Tab change ───────────────────────────────────────────────
+      function cambiarTab(docType) {
+        currentDocType = docType
+        currentPage = 1
+        isSearchMode = false
+        currentSearchQuery = ''
+        document.getElementById('searchInput').value = ''
+        
+        // Update tab styles
+        const tabs = ['Informes', 'Programacion', 'Renovacion', 'Mantenimiento']
+        tabs.forEach(tab => {
+          const btn = document.getElementById('tab' + tab)
+          if (tab.toLowerCase() === docType) {
+            btn.className = 'flex-1 px-4 py-3 text-sm font-medium text-primary border-b-2 border-primary bg-primary/5 flex items-center justify-center gap-2'
+          } else {
+            btn.className = 'flex-1 px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center justify-center gap-2'
+          }
+        })
+        
+        // Update list title
+        document.getElementById('listTitle').textContent = tabConfig[docType].title
+        
+        // Load data
+        cargarInformes(1)
+      }
+
+      // ── Load informes ────────────────────────────────────────────
+      async function cargarInformes(page = 1) {
+        showState('loadingState')
+        currentPage = page
+        isSearchMode = false
+        currentSearchQuery = ''
+        const config = tabConfig[currentDocType]
+        try {
+          const response = await fetch(
+            `${config.listUrl}?page=${page}&limit=15`,
+            { credentials: 'include' }
+          )
+          if (!response.ok) {
+            if (response.status === 401) {
+              alert('⚠️ Sesión expirada. Por favor inicia sesión nuevamente.')
+              localStorage.removeItem('user')
+              window.location.href = 'login.html'
+              return
+            }
+            throw new Error('Error al cargar documentos')
+          }
+          const data = await response.json()
+          totalInformesCount = data.total
+          renderInformes(data.informes)
+          renderPagination(data)
+          actualizarEstadisticas(data)
+        } catch (error) {
+          console.error('Error:', error)
+          showState('errorState')
+        }
+      }
+
+      // ── Search ───────────────────────────────────────────────────
+      async function buscarInformes(query, page = 1) {
+        const trimmed = query.trim()
+        if (!trimmed) {
+          await cargarInformes()
+          return
+        }
+        showState('loadingState')
+        currentPage = page
+        isSearchMode = true
+        currentSearchQuery = trimmed
+        const config = tabConfig[currentDocType]
+        try {
+          const response = await fetch(
+            `${config.searchUrl}?page=${page}&limit=15`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ q: trimmed })
+            }
+          )
+          if (!response.ok) throw new Error('Error al buscar documentos')
+          const data = await response.json()
+          renderInformes(data.informes, true)
+          renderPagination(data)
+          actualizarEstadisticas(data)
+        } catch (error) {
+          console.error('Error:', error)
+          alert('❌ Error al buscar documentos')
+          showState('errorState')
+        }
+      }
+
+      // ── Render list ──────────────────────────────────────────────
+      function renderInformes(informes, isSearch = false) {
+        const paginationContainer = document.getElementById(
+          'paginationContainer'
+        )
+        const config = tabConfig[currentDocType]
+
+        if (informes.length === 0) {
+          paginationContainer.classList.add('hidden')
+          showState(isSearch ? 'noResultsState' : 'emptyState')
+          return
+        }
+
+        const list = document.getElementById('informesList')
+        list.innerHTML = informes
+          .map((informe, i) => {
+            const fecha = new Date(informe.created_at)
+            const fechaStr = fecha.toLocaleDateString('es-ES', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+
+            // Badge color based on recency
+            const diasDiff = Math.floor(
+              (Date.now() - fecha.getTime()) / (1000 * 60 * 60 * 24)
+            )
+            const badgeClass =
+              diasDiff === 0
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400'
+                : diasDiff <= 7
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400'
+                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+
+            return `
+          <div class="informe-row p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+               style="animation-delay:${i * 0.04}s">
+
+            <!-- Mobile layout: stacked -->
+            <div class="flex items-start gap-3 sm:items-center">
+              <!-- Icon -->
+              <div class="w-10 h-10 shrink-0 ${config.iconBg} rounded-lg flex items-center justify-center mt-0.5 sm:mt-0">
+                <span class="material-symbols-outlined ${config.iconColor} text-xl">${config.icon}</span>
+              </div>
+
+              <!-- Info -->
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h4 class="font-semibold text-slate-900 dark:text-white text-sm truncate max-w-[200px] sm:max-w-none">${escapeHtml(
+                    informe.nombre_archivo
+                  )}</h4>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[13px]">schedule</span>
+                  ${fechaStr}
+                </p>
+              </div>
+
+              <!-- Actions: desktop inline, mobile stacked below -->
+              <div class="hidden sm:flex items-center gap-2 shrink-0">
+                <button onclick="descargarInforme(${informe.id}, '${escapeHtml(
+              informe.nombre_archivo
+            )}')"
+                  class="px-3 py-1.5 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1.5 text-xs font-medium">
+                  <span class="material-symbols-outlined text-[15px]">download</span>
+                  Descargar
+                </button>
+                <button onclick="eliminarInforme(${informe.id})"
+                  class="p-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
+                  title="Eliminar">
+                  <span class="material-symbols-outlined text-[18px]">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Mobile actions row -->
+            <div class="flex items-center gap-2 mt-3 ml-13 sm:hidden pl-13" style="padding-left:52px">
+              <button onclick="descargarInforme(${informe.id}, '${escapeHtml(
+              informe.nombre_archivo
+            )}')"
+                class="flex-1 px-3 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-1.5 text-xs font-medium">
+                <span class="material-symbols-outlined text-[15px]">download</span>
+                Descargar
+              </button>
+              <button onclick="eliminarInforme(${informe.id})"
+                class="px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center gap-1 text-xs font-medium">
+                <span class="material-symbols-outlined text-[15px]">delete</span>
+                Eliminar
+              </button>
+            </div>
+
+          </div>`
+          })
+          .join('')
+
+        showState('informesList')
+      }
+
+      // ── Render pagination ────────────────────────────────────────
+      function renderPagination(data) {
+        const container = document.getElementById('paginationContainer')
+        const controls = document.getElementById('paginationControls')
+        const info = document.getElementById('paginationInfo')
+
+        if (data.totalPages <= 1) {
+          container.classList.add('hidden')
+          return
+        }
+
+        container.classList.remove('hidden')
+
+        // Info text
+        const start = (data.page - 1) * data.limit + 1
+        const end = Math.min(data.page * data.limit, data.total)
+        info.textContent = `Mostrando ${start}-${end} de ${data.total} informes`
+
+        // Generate page buttons
+        let buttons = ''
+
+        // Previous button
+        buttons += `
+          <button onclick="goToPage(${data.page - 1})" 
+            ${!data.hasPrevPage ? 'disabled' : ''} 
+            class="px-2 py-1.5 rounded-lg text-xs font-medium transition-colors
+            ${
+              data.hasPrevPage
+                ? 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                : 'text-slate-300 dark:text-slate-600 cursor-not-allowed'
+            }">
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>`
+
+        // Page numbers
+        const maxVisiblePages = 5
+        let startPage = Math.max(1, data.page - Math.floor(maxVisiblePages / 2))
+        let endPage = Math.min(data.totalPages, startPage + maxVisiblePages - 1)
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+          startPage = Math.max(1, endPage - maxVisiblePages + 1)
+        }
+
+        // First page + ellipsis
+        if (startPage > 1) {
+          buttons += `
+            <button onclick="goToPage(1)" 
+              class="w-8 h-8 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              1
+            </button>`
+          if (startPage > 2) {
+            buttons += `<span class="px-1 text-slate-400">...</span>`
+          }
+        }
+
+        // Page numbers
+        for (let i = startPage; i <= endPage; i++) {
+          const isActive = i === data.page
+          buttons += `
+            <button onclick="goToPage(${i})" 
+              class="w-8 h-8 rounded-lg text-xs font-medium transition-colors
+              ${
+                isActive
+                  ? 'bg-primary text-white'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }">
+              ${i}
+            </button>`
+        }
+
+        // Last page + ellipsis
+        if (endPage < data.totalPages) {
+          if (endPage < data.totalPages - 1) {
+            buttons += `<span class="px-1 text-slate-400">...</span>`
+          }
+          buttons += `
+            <button onclick="goToPage(${data.totalPages})" 
+              class="w-8 h-8 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              ${data.totalPages}
+            </button>`
+        }
+
+        // Next button
+        buttons += `
+          <button onclick="goToPage(${data.page + 1})" 
+            ${!data.hasNextPage ? 'disabled' : ''} 
+            class="px-2 py-1.5 rounded-lg text-xs font-medium transition-colors
+            ${
+              data.hasNextPage
+                ? 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                : 'text-slate-300 dark:text-slate-600 cursor-not-allowed'
+            }">
+            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>`
+
+        controls.innerHTML = buttons
+      }
+
+      // ── Go to page ───────────────────────────────────────────────
+      function goToPage(page) {
+        if (isSearchMode) {
+          buscarInformes(currentSearchQuery, page)
+        } else {
+          cargarInformes(page)
+        }
+        // Scroll to top of list
+        document
+          .getElementById('informesList')
+          .scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+
+      // ── Stats ────────────────────────────────────────────────────
+      function actualizarEstadisticas(data) {
+        // Total informes desde la respuesta paginada
+        document.getElementById('totalInformes').textContent = data.total || 0
+
+        // Para "Este Mes" y "Último Informe" usamos los informes de la página actual
+        // o hacemos una estimación basada en el total
+        const informes = data.informes || []
+
+        if (informes.length > 0) {
+          // Contar informes de este mes en la página actual
+          const ahora = new Date()
+          const esteMesPagina = informes.filter(i => {
+            const f = new Date(i.created_at)
+            return (
+              f.getMonth() === ahora.getMonth() &&
+              f.getFullYear() === ahora.getFullYear()
+            )
+          }).length
+
+          // Si estamos en la primera página, mostramos el conteo
+          // Si no, mostramos "~" para indicar que es aproximado
+          if (currentPage === 1 && !isSearchMode) {
+            document.getElementById('esteMes').textContent = esteMesPagina
+          } else {
+            document.getElementById('esteMes').textContent = `~${esteMesPagina}`
+          }
+
+          // Último informe (el más reciente está primero)
+          const dias = Math.floor(
+            (Date.now() - new Date(informes[0].created_at).getTime()) /
+              (1000 * 60 * 60 * 24)
+          )
+          document.getElementById('ultimoInforme').textContent =
+            dias === 0 ? 'Hoy' : dias === 1 ? 'Ayer' : `Hace ${dias}d`
+        } else {
+          document.getElementById('esteMes').textContent = '0'
+          document.getElementById('ultimoInforme').textContent = '—'
+        }
+      }
+
+      // ── Download ─────────────────────────────────────────────────
+      async function descargarInforme(id, nombre) {
+        const config = tabConfig[currentDocType]
+        try {
+          const response = await fetch(
+            `${config.downloadUrl}/${id}${config.downloadSuffix}`,
+            { credentials: 'include' }
+          )
+          if (!response.ok) throw new Error('Error al descargar')
+          const blob = await response.blob()
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = nombre
+          document.body.appendChild(a)
+          a.click()
+          window.URL.revokeObjectURL(url)
+          document.body.removeChild(a)
+        } catch (error) {
+          console.error('Error:', error)
+          alert('❌ Error al descargar el documento')
+        }
+      }
+
+      // ── Delete ───────────────────────────────────────────────────
+      async function eliminarInforme(id) {
+        if (
+          !confirm('¿Eliminar este documento? Esta acción no se puede deshacer.')
+        )
+          return
+        const config = tabConfig[currentDocType]
+        try {
+          const response = await fetch(
+            `${config.deleteUrl}/${id}`,
+            {
+              method: 'DELETE',
+              credentials: 'include'
+            }
+          )
+          if (!response.ok) throw new Error('Error al eliminar')
+          alert('✅ Documento eliminado exitosamente')
+          // Recargar la página actual (o ir a la anterior si esta quedó vacía)
+          if (isSearchMode) {
+            buscarInformes(currentSearchQuery, currentPage)
+          } else {
+            cargarInformes(currentPage)
+          }
+        } catch (error) {
+          console.error('Error:', error)
+          alert('❌ Error al eliminar el documento')
+        }
+      }
+
+      // ── Utils ────────────────────────────────────────────────────
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;')
+      }
+
+      // ── Search with debounce ──────────────────────────────────────
+      const searchInput = document.getElementById('searchInput')
+      let searchTimer
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer)
+        searchTimer = setTimeout(
+          () => buscarInformes(searchInput.value, 1),
+          400
+        )
+      })
+      searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          clearTimeout(searchTimer)
+          buscarInformes(searchInput.value, 1)
+        }
+      })
+      document
+        .getElementById('searchBtn')
+        .addEventListener('click', () => buscarInformes(searchInput.value, 1))
+
+      // ── Init ─────────────────────────────────────────────────────
+      cargarInformes()
+    </script>
+  </body>
+</html>

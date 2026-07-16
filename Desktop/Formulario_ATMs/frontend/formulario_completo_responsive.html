@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Formulario de Informe Técnico - ATM/UPS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#135bec',
+              'background-light': '#f6f6f8',
+              'background-dark': '#101622'
+            },
+            fontFamily: {
+              display: ['Inter', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      details > summary { list-style: none; }
+      details > summary::-webkit-details-marker { display: none; }
+      body { min-height: max(884px, 100dvh); }
+      .sidebar-overlay { background: rgba(0,0,0,0.5); }
+
+      .sidebar-menu-btn {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s ease;
+      }
+
+      .sidebar-menu-btn:hover {
+        background-color: rgba(148, 163, 184, 0.1);
+      }
+
+      .sidebar-menu-btn.active {
+        background-color: rgba(59, 130, 246, 0.12);
+        color: #135bec;
+      }
+
+      .dark .sidebar-menu-btn.active {
+        background-color: rgba(59, 130, 246, 0.15);
+      }
+
+      .sidebar-chevron {
+        transition: transform 0.2s ease;
+        font-size: 1.2rem;
+      }
+
+      .sidebar-chevron.open {
+        transform: rotate(180deg);
+      }
+
+      .sidebar-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease;
+      }
+
+      .sidebar-submenu.open {
+        max-height: 1000px;
+      }
+
+      .sidebar-submenu a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0 0.5rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.5rem;
+        color: #64748b;
+        text-decoration: none;
+        background: rgba(148, 163, 184, 0.08);
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+      }
+
+      .dark .sidebar-submenu a {
+        color: #94a3b8;
+        background: rgba(148, 163, 184, 0.1);
+      }
+
+      .sidebar-submenu a:hover {
+        background-color: rgba(59, 130, 246, 0.15);
+        color: #135bec;
+        transform: translateX(4px);
+      }
+
+      .dark .sidebar-submenu a:hover {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+
+      .sidebar-item-btn {
+        width: 100%;
+        border: 0;
+        background: rgba(148, 163, 184, 0.06);
+        color: #475569;
+        padding: 0.6rem 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+
+      .dark .sidebar-item-btn {
+        background: rgba(148, 163, 184, 0.08);
+        color: #cbd5e1;
+      }
+
+      .sidebar-item-btn:hover {
+        background-color: rgba(59, 130, 246, 0.12);
+        color: #135bec;
+      }
+
+      .dark .sidebar-item-btn:hover {
+        background-color: rgba(59, 130, 246, 0.18);
+        color: #60a5fa;
+      }
+
+      .sidebar-submenu.nested {
+        margin-left: 0.5rem;
+        padding-left: 0.5rem;
+        border-left: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .dark .sidebar-submenu.nested {
+        border-left-color: rgba(148, 163, 184, 0.22);
+      }
+      
+      /* Estilos para Drag & Drop de imágenes */
+      .drop-zone {
+        border: 2px dashed #cbd5e1;
+        border-radius: 0.75rem;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: #f8fafc;
+        position: relative;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      .dark .drop-zone {
+        background: #1e293b;
+        border-color: #475569;
+      }
+      .drop-zone:hover {
+        border-color: #135bec;
+        background: rgba(19, 91, 236, 0.05);
+      }
+      .drop-zone.dragover {
+        border-color: #135bec;
+        background: rgba(19, 91, 236, 0.1);
+        border-style: solid;
+        transform: scale(1.02);
+      }
+      .drop-zone.has-file {
+        border-color: #22c55e;
+        border-style: solid;
+        background: rgba(34, 197, 94, 0.05);
+      }
+      .dark .drop-zone.has-file {
+        background: rgba(34, 197, 94, 0.1);
+      }
+      .drop-zone input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .drop-zone-icon {
+        font-size: 2.5rem;
+        color: #94a3b8;
+      }
+      .drop-zone.has-file .drop-zone-icon {
+        color: #22c55e;
+      }
+      .drop-zone-text {
+        color: #64748b;
+        font-size: 0.875rem;
+      }
+      .dark .drop-zone-text {
+        color: #94a3b8;
+      }
+      .drop-zone-text strong {
+        color: #135bec;
+      }
+      .drop-zone-preview {
+        max-width: 100%;
+        max-height: 150px;
+        border-radius: 0.5rem;
+        object-fit: contain;
+        display: none;
+      }
+      .drop-zone.has-file .drop-zone-preview {
+        display: block;
+      }
+      .drop-zone.has-file .drop-zone-placeholder {
+        display: none;
+      }
+      .drop-zone-filename {
+        font-size: 0.75rem;
+        color: #22c55e;
+        font-weight: 500;
+        word-break: break-all;
+        max-width: 100%;
+        display: none;
+      }
+      .drop-zone.has-file .drop-zone-filename {
+        display: block;
+      }
+      .drop-zone-remove {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .drop-zone.has-file .drop-zone-remove {
+        display: flex;
+      }
+      .drop-zone-remove:hover {
+        background: #dc2626;
+      }
+      /* Botones para móvil: cámara y archivos */
+      .drop-zone-mobile-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        width: 100%;
+        justify-content: center;
+      }
+      .drop-zone-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        z-index: 5;
+        position: relative;
+      }
+      .drop-zone-btn-camera {
+        background: #135bec;
+        color: white;
+      }
+      .drop-zone-btn-camera:hover {
+        background: #0f4ab5;
+      }
+      .drop-zone-btn-gallery {
+        background: #e2e8f0;
+        color: #334155;
+      }
+      .drop-zone-btn-gallery:hover {
+        background: #cbd5e1;
+      }
+      .dark .drop-zone-btn-gallery {
+        background: #334155;
+        color: #e2e8f0;
+      }
+      .dark .drop-zone-btn-gallery:hover {
+        background: #475569;
+      }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col">
+    
+    <!-- Overlay para móvil (oculto por defecto) -->
+    <div id="sidebarOverlay" class="hidden fixed inset-0 sidebar-overlay z-30 lg:hidden" onclick="closeSidebar()"></div>
+    
+    <!-- Sidebar Navigation - Oculto en móvil, visible en desktop -->
+    <nav id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-lg flex flex-col z-40 overflow-hidden
+      -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+      <div class="p-4 md:p-6 border-b border-slate-200 dark:border-slate-700">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Menú de Formularios</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Selecciona un formulario</p>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 space-y-1">
+        <div>
+          <button class="sidebar-menu-btn" type="button" data-menu="incidentes" onclick="toggleSidebarMenu(this)">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-xl">warning</span>
+              <span>Incidentes</span>
+            </div>
+            <span class="sidebar-chevron">⌄</span>
+          </button>
+          <div class="sidebar-submenu" data-submenu="incidentes">
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="incidente-fallo" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">bolt</span>
+                  <span>Fallo</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="incidente-fallo">
+                <a href="formulario_mop_renovacion_responsive.html?origen=fallo&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de Fallo</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=fallo&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de Fallo</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="incidente-cambio-bateria" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">battery_unknown</span>
+                  <span>Cambio de batería</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="incidente-cambio-bateria">
+                <a href="formulario_mop_renovacion_responsive.html?origen=cambio-bateria&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP cambio de Batería</span>
+                </a>
+                <a href="formulario_completo_responsive.html?origen=cambio-bateria&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe cambio de Batería</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <button class="sidebar-menu-btn" type="button" data-menu="requerimientos" onclick="toggleSidebarMenu(this)">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-xl">checklist</span>
+              <span>Requerimientos</span>
+            </div>
+            <span class="sidebar-chevron">⌄</span>
+          </button>
+          <div class="sidebar-submenu" data-submenu="requerimientos">
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-instalacion" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">construction</span>
+                  <span>Instalación</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-instalacion">
+                <a href="formulario_completo_responsive.html?origen=instalacion&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de Instalación</span>
+                </a>
+                <a href="formulario_mop_programacion_responsive.html?origen=instalacion&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de Instalación</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-mantenimiento" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">schedule</span>
+                  <span>Programación de mantenimiento</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-mantenimiento">
+                <a href="formulario_completo_responsive.html?origen=programacion-mantenimiento&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de Mantenimiento</span>
+                </a>
+                <a href="formulario_mop_mantenimiento_preventivo.html?origen=programacion-mantenimiento&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de Mantenimiento</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <button class="sidebar-item-btn" type="button" data-item-menu="requerimiento-correctiva" onclick="toggleSidebarItemMenu(this)">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">build</span>
+                  <span>Programación correctiva</span>
+                </div>
+                <span class="sidebar-chevron">⌄</span>
+              </button>
+              <div class="sidebar-submenu nested" data-item-submenu="requerimiento-correctiva">
+                <a href="formulario_completo_responsive.html?origen=programacion-correctiva&tipo=informe" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">description</span>
+                  <span>Informe de Programación Correctiva</span>
+                </a>
+                <a href="formulario_mop_programacion_responsive.html?origen=programacion-correctiva&tipo=mop" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">checklist</span>
+                  <span>MOP de Programación Correctiva</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a href="mis_informes.html" id="sidebarMisInformes" class="hidden items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all">
+          <span class="material-symbols-outlined text-xl">folder</span>
+          <span>Mis Informes</span>
+        </a>
+      </div>
+      <div class="p-4 border-t border-slate-200 dark:border-slate-700">
+        <button id="sidebarLogoutBtn" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-all text-sm font-medium">
+          <span class="material-symbols-outlined text-lg">logout</span>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content - Offset en desktop, full width en móvil -->
+    <div class="lg:ml-64">
+    
+    <!-- Header con Hamburguesa -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="flex items-center p-4 justify-between max-w-6xl mx-auto w-full gap-3">
+        <!-- Botón Hamburguesa (solo móvil) -->
+        <button id="hamburgerBtn" class="lg:hidden text-slate-900 dark:text-white text-2xl" onclick="openSidebar()">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        
+        <div class="flex items-center gap-2 text-xs sm:text-sm">
+          <span class="material-symbols-outlined text-primary text-2xl">description</span>
+          <div>
+            <h1 id="formHeaderTitle" class="text-slate-900 dark:text-white font-bold">Informe Técnico</h1>
+            <p id="formHeaderSubtitle" class="text-xs text-slate-500 dark:text-slate-400">UPS/ATM</p>
+          </div>
+        </div>
+        
+        <div class="flex-1"></div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-6xl mx-auto p-4 flex flex-col gap-4">
+      <form id="informeForm" enctype="multipart/form-data" class="flex flex-col gap-4" novalidate>
+
+        <!-- 1. DATOS GENERALES -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden" open>
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">description</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-sm sm:text-base font-bold">1. Datos Generales</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Cliente *</label>
+                <input name="nombre_cliente" type="text" value="BBVA" placeholder="Nombre de la empresa"
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" disabled/>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Código de documento *</label>
+                <input name="codigo_documento" type="text" value="REG.007.004" placeholder="REG.007.004" disabled
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" />
+              </div>
+
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Actividad *</label>
+                <select name="nombre_actividad" id="selectActividad" placeholder="Selecciona una actividad" 
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" required>
+                  <option value="">Selecciona una actividad</option>
+                  <option value="Por renovación de ATM">Renovación de ATM</option>
+                  <option value="Por programación">Programación</option>
+                  <option value="Fallo ATM">Fallo ATM</option>
+                  <option value="UPS en alerta">UPS en alerta</option>
+                  <option value="Cambio de batería">Cambio de batería</option>
+              </select>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Fecha de ejecución *</label>
+                <input name="fecha_ejecucion" type="date" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">ATM *</label>
+                <input name="nombre_lugar" type="text" placeholder="ej. ATM 2616 - PRIMAX WIRACOCHA" maxlength="40"required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Dirección *</label>
+                <input name="nombre_direccion" type="text" placeholder="ej. JR. HUIRACOCHA 2172, JESÚS MARÍA 15072" maxlength="200" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1.5">
+   <label
+                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                    >Nombre y Apellidos</label
+                  >
+                  <select
+                    id="selectTecnicoR"
+                    name="nombre_del_elaborador"
+                    class="form-select w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                    required
+                  >
+                    <option value="">-- Seleccionar Técnico --</option>
+                    <option
+                      value="GUTIERREZ MARTINEZ, DIEGO ALEXIS"
+                      data-dni="73499383"
+                    >
+                      GUTIERREZ MARTINEZ, DIEGO ALEXIS - TÉCNICO ELECTRÓNICO
+                    </option>
+                    <option
+                      value="JARA MURRIETA, ANTONIO EDUARDO"
+                      data-dni="73316692"
+                    >
+                      JARA MURRIETA, ANTONIO EDUARDO - TÉCNICO ELECTRICISTA
+                    </option>
+                    <option
+                      value="LOPEZ VILLEGAS, JESUS ALEXANDER"
+                      data-dni="72523544"
+                    >
+                      LOPEZ VILLEGAS, JESUS ALEXANDER - TÉCNICO ELECTRÓNICO
+                    </option>
+                    <option
+                      value="FERNANDEZ GONZALO, ADLER JONATHAN"
+                      data-dni="76132450"
+                    >
+                      FERNANDEZ GONZALO, ADLER JONATHAN - TÉCNICO ELECTRICISTA
+                    </option>
+                    <option
+                      value="CHUQUIZUTA BASILIO, HARRY KENYN"
+                      data-dni="70590078"
+                    >
+                      CHUQUIZUTA BASILIO, HARRY KENYN - TÉCNICO ELECTRICISTA
+                    </option>
+                    <option
+                      value="BLANCO GALVEZ, MAICOL ALEXANDER"
+                      data-dni="60266365"
+                    >
+                      BLANCO GALVEZ, MAICOL ALEXANDER - TÉCNICO ELECTRICISTA
+                    </option>
+                  </select>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Firma del Elaborador *</label>
+                <input name="firma_elaborador" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Fecha elaboración *</label>
+                <input id="fecha_elaboracion" name="fecha_elaboracion" readonly
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" />
+              </div>
+
+              <div id="campoFechaRevisado" class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Fecha revisado *</label>
+                <input name="fecha_revisado" id="inputFechaRevisado" type="date"
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" />
+              </div>
+
+              <div id="campoFechaAprobado" class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Fecha aprobado *</label>
+                <input name="fecha_aprobado" id="inputFechaAprobado" type="date"
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-12 px-3 text-sm" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">OT</label>
+                <input name="num_ot" type="text" placeholder="ej. OT-2024-001"
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+              </div>
+
+            </div>
+
+            <!-- Antecedentes con plantillas -->
+            <div class="flex flex-col gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Antecedentes *</label>
+              
+              <!-- Tipo de antecedente (solo lectura) -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-600 dark:text-slate-400 text-xs font-medium">Tipo de antecedente</label>
+                <div class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white h-12 px-3 flex items-center text-sm">
+                  Ticket
+                </div>
+              </div>
+
+              <!-- Campos del ticket -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-slate-600 dark:text-slate-400 text-xs font-medium">ID del ATM *</label>
+                  <input type="text" id="atmId" placeholder="Ej: 1318" required
+                    class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-slate-600 dark:text-slate-400 text-xs font-medium">Local *</label>
+                  <input type="text" id="localNombre" placeholder="Ej: CENCOSUD ALMACÉN CENTRAL" required
+                    class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-slate-600 dark:text-slate-400 text-xs font-medium">Número de Ticket *</label>
+                  <input type="text" id="ticketNumero" placeholder="Ej: 10852475" required
+                    class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-slate-600 dark:text-slate-400 text-xs font-medium">Motivo *</label>
+                  <input type="text" id="ticketMotivo" placeholder="Ej: CAMBIO DE BATERÍA" required
+                    class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+                </div>
+              </div>
+
+              <!-- Descripción editable (escrita por el usuario) -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-600 dark:text-slate-400 text-xs font-medium">Descripción de la acción *</label>
+                <textarea id="ticketDescripcion" placeholder="Ej: se instala nuevo UPS ABB/LEGRAND PowerValue de 1kVA con transformador de aislamiento para garantizar la continuidad del servicio" required rows="3"
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+              </div>
+
+              <!-- Vista previa del texto generado (NO EDITABLE) -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-600 dark:text-slate-400 text-xs font-medium">Vista previa:</label>
+                <div id="vistaPrevia" class="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-300 min-h-[100px] italic">
+                  Completa los campos para ver la vista previa...
+                </div>
+              </div>
+
+              <!-- Campo oculto que se envía con el formulario -->
+              <textarea name="descripcion_antecedente" id="descripcionAntecedenteHidden" rows="4" required style="display: none;"
+                class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <!-- 2. IDENTIFICACIÓN DE EQUIPOS -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">router</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">2. Identificación de Equipos</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Serie UPS *</label>
+                <input name="num_serie_ups" type="text" placeholder="SN-UPS-99283" maxlength="25" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Marca UPS *</label>
+                <input name="marca_ups" type="text" placeholder="Marca" maxlength="50" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Modelo UPS *</label>
+                <input name="modelo_ups" type="text" placeholder="Modelo" maxlength="50" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto UPS *</label>
+                <input name="fotoups" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Serie Transformador *</label>
+                <input name="num_serie_transformador" type="text" placeholder="TRAFO-XJ2" maxlength="25" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Transformador *</label>
+                <input name="fototransformador" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Serie Tarjeta de Red *</label>
+                <input name="num_serie_tarjetared" type="text" placeholder="TN-12345" maxlength="25" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm" />
+              </div>
+                            <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Tarjeta de Red *</label>
+                <input name="fototarjetared" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">MAC Tarjeta de Red *</label>
+                <input name="num_mac_tarjetared" type="text" placeholder="002085C20A68" maxlength="17" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm font-mono" />
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+        <!-- 3. CONDICIONES INICIALES -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">pending_actions</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">3. Condiciones Iniciales del Site</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="flex flex-col gap-1.5">
+              <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Condición inicial del site *</label>
+              <textarea name="condicion_inicial_site" rows="3" placeholder="Descripción general del estado inicial..." required
+                class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+            </div>
+
+            <!-- Condición 1 -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Observación 1</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_condicion1" rows="2" placeholder="ej. ATM Operativo con conmutador del tablero en posición UPS. " required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_condicion1" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <!-- Condición 2 -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Observación 2</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_condicion2" rows="2" placeholder="ej. Conmutador de Tablero en posición UPS" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_condicion2" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <!-- Condición 3 -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Observación 3</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_condicion3" rows="2" placeholder="ej. Ubicación de equipos existentes (UPS y Transformador de Aislamiento) " required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_condicion3" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 4. DESCONEXIÓN Y RETIRO -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">power_off</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">4. Desconexión y Retiro</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Paso 1</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_desconexion_y_retiro1" rows="2" placeholder="ej. Desconexión y retiro de transformador de aislamiento y UPS existente." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_desconexion_y_retiro1" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Paso 2</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_desconexion_y_retiro2" rows="2" placeholder="ej. Espacio libre para montaje de nuevos equipos." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_desconexion_y_retiro2" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Paso 3</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_desconexion_y_retiro3" rows="2" placeholder="ej. Retiro de polvo del área donde se ubicará los nuevos equipos (UPS y TX)" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_desconexion_y_retiro3" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 5. INSTALACIÓN Y CONEXIÓN -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">build</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">5. Instalación y Conexión</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Paso 1</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_instalacion_conexion1" rows="2" placeholder="ej. MONTAJE Y CONEXIÓN DE NUEVO UPS Y TRANSFORMADOR DE AISLAMIENTO" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_instalacion_conexion1" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Paso 2</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_instalacion_conexion2" rows="2" placeholder="ej. ESTADO" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_instalacion_conexion2" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Paso 3</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_instalacion_conexion3" rows="2" placeholder="ej. UPS SIN ALARMAS ACTIVAS" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_instalacion_conexion3" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 6. TENSIONES DE ENTRADA -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">electric_bolt</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">6. Tensiones de Entrada</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">L-N</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_entrada1" type="text" step="0.01" rows="2" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_tension_entrada1" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">L-T</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_entrada2" rows="2" type="text" step="0.01" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_tension_entrada2" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">N-T</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_entrada3" rows="2" type="text" maxlength="10" step="0.01" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_tension_entrada3" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 7. TENSIONES DE SALIDA -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">output</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">7. Tensiones de Salida</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">L-N</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_salida1" type="text" step="0.01" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm">
+                <input name="foto_tension_salida1" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">L-T</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_salida2" type="text" step="0.01" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm">
+                <input name="foto_tension_salida2" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">N-T</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_salida3" type="text" maxlength="10" step="0.01" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm">
+                <input name="foto_tension_salida3" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 8. TENSIONES DE SALIDA UPS -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">battery_charging_full</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">8. Tensiones de Salida UPS</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">L-N</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_salidaups1" type="text" maxlength="10" step="0.01" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm">
+                <input name="foto_tension_salidaups1" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">L-T</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_salidaups2" type="text" maxlength="10" step="0.01" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm">
+                <input name="foto_tension_salidaups2" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">N-T</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_tension_salidaups3" type="text" maxlength="10" placeholder="VAC / MVAC" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm">
+                <input name="foto_tension_salidaups3" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+        
+        <!-- 9. ESTADO DEL UPS -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">monitor_heart</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">9. Estado del UPS</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="flex flex-col gap-1.5">
+              <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Detalles del Estado UPS *</label>
+              <textarea name="estado_ups_detalles" rows="3" placeholder="Descripción general del estado del UPS..." required
+                class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Conmutador *</label>
+                <input name="foto_conmutador" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Estado *</label>
+                <input name="foto_conmutador_estado" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Alarmas *</label>
+                <input name="foto_conmutador_alarmas" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 10. PARÁMETROS DEL DISPLAY UPS -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">display_settings</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">10. Parámetros del Display UPS</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Tensión de entrada, Tensión de salida, Frecuencia de entrada y salida:</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_tensiones_ups_display" rows="2" placeholder="Valores del display..." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_tensiones_ups_display" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Cargas</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_cargas" rows="2" placeholder="Valores de carga..." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_cargas_ups" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Batería, Autonomía y Flotante</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_bateria" rows="2" placeholder="Estado de la batería..." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_bateria_ups" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 11. PARÁMETROS INTERNOS -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">thermostat</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">11. Parámetros Internos</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Temperatura</h4>
+              <div class="flex flex-col gap-3">
+                <input name="descripcion_temperatura" rows="2" type="number" step="0.01" placeholder="Temperatura medida..." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></input>
+                <input name="foto_temperatura" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Bus DC</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_busdc" rows="2" type="number" step="0.01" placeholder="Valores del bus DC..." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_busdc" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Nivel de carga y Autonomía</h4>
+              <div class="flex flex-col gap-3">
+                <textarea name="descripcion_carga" rows="2" type="number" step="0.01" placeholder="Valores de carga interna..." required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+                <input name="foto_carga" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 12. CONEXIÓN DE CABLE DE RED -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">cable</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">12. Conexión de Cable de Red</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Cable 1 *</label>
+                <input name="foto_conexion_cable_red1" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Cable 2 *</label>
+                <input name="foto_conexion_cable_red2" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Cable 3 *</label>
+                <input name="foto_conexion_cable_red3" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 13. VALIDACIÓN ATM OPERATIVO -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">verified</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-base font-bold">13. Validación ATM Operativo</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto Conmutador Manual *</label>
+                <input name="foto_conmutador_manual" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto ATM Funcional *</label>
+                <input name="foto_atm_funcional" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Foto ATM Completo *</label>
+                <input name="foto_atm_completo" type="file" accept="image/*" required
+                  class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary h-11 px-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 14. CONCLUSIONES Y OBSERVACIONES -->
+        <details class="group bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-[20px]">summarize</span>
+              </div>
+              <h3 class="text-slate-900 dark:text-white text-sm sm:text-base font-bold">14. Conclusiones y Observaciones</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 transition-transform group-open:rotate-180">expand_more</span>
+          </summary>
+          <div class="px-4 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+            
+            <div class="flex flex-col gap-1.5">
+              <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Conclusiones *</label>
+              <textarea name="descripcion_conclusiones" rows="4" placeholder="Conclusiones del trabajo realizado..." required
+                class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Observaciones *</label>
+              <textarea name="descripcion_observacion" rows="4" placeholder="Observaciones adicionales..." required
+                class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-slate-700 dark:text-slate-300 text-sm font-medium">Recomendaciones *</label>
+              <textarea name="descripcion_recomendaciones" rows="4" placeholder="Recomendaciones técnicas..." required
+                class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary p-3 text-sm"></textarea>
+            </div>
+          </div>
+        </details>
+
+      </form>
+    </main>
+
+    <!-- Footer Action -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 sticky bottom-0 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <div class="max-w-6xl mx-auto w-full flex flex-col gap-3">
+        <button type="submit" form="informeForm" id="submitBtn"
+          class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3.5 rounded-lg shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm sm:text-base">
+          <span class="material-symbols-outlined">upload_file</span>
+          Generar y Descargar Informe
+        </button>
+        <p class="text-xs text-center text-slate-400 dark:text-slate-500">
+          Al generar el informe, confirmas que la información es verídica.
+        </p>
+      </div>
+    </footer>
+
+    </div><!-- Cierre de lg:ml-64 -->
+
+    <script src="./js/formulario_completo.js?v=6"></script>
+  </body>
+</html>
